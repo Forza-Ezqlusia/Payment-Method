@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f8fa">
+  <title>Payment Method — Bee Network</title>
+  <style>
+    :root{color-scheme:light;--ink:#172538;--muted:#718096;--line:#e8edf2;--gold:#f3ae24;--gold-soft:#fff7e4;--green:#16a765;--navy:#18314d}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;padding:32px 18px;display:grid;place-items:center;background:radial-gradient(ellipse at 50% -15%,#fff0c7 0,transparent 42%),#f5f7fa;color:var(--ink);font-family:Inter,"Segoe UI",Arial,sans-serif}
+    .page{width:min(100%,480px)}
+    .brand{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 18px;color:var(--navy);font-size:14px;font-weight:800;letter-spacing:.11em}
+    .brand-mark{display:block;flex:0 0 36px;width:36px;height:36px;object-fit:contain}
+    .card{position:relative;overflow:hidden;background:#fff;border:1px solid #e7ecf2;border-radius:22px;padding:32px;box-shadow:0 20px 60px rgba(24,49,77,.09)}
+    .card:before{position:absolute;inset:0 0 auto;height:5px;background:linear-gradient(90deg,#f5b52d,#ffda72);content:""}
+    .status{display:inline-flex;align-items:center;gap:8px;margin-bottom:20px;padding:8px 12px;border:1px solid #f1dfb4;border-radius:999px;background:#fffaf0;color:#946300;font-size:11px;font-weight:750;letter-spacing:.075em;text-transform:uppercase}
+    .status i{width:7px;height:7px;border-radius:50%;background:#e4a719;box-shadow:0 0 0 3px #faedca}
+    h1{margin:0 0 18px;text-align:center;font-size:clamp(27px,7vw,34px);line-height:1.12;letter-spacing:-.04em;color:#142b43}
+    .intro{margin:0;color:var(--muted);font-size:14px;line-height:1.75}
+    .intro strong{color:#34465a}
+    .steps{display:flex;align-items:center;gap:11px;margin:24px 0 20px;padding:15px 16px;border-radius:14px;background:#f7f9fb;color:#556578;font-size:12px;line-height:1.5}
+    .steps-icon{display:grid;place-items:center;flex:0 0 34px;height:34px;border:1px solid #f2e4c3;border-radius:11px;background:var(--gold-soft);color:#9a6a08}
+    .steps b{color:#26384c}
+    .section-title{display:flex;align-items:center;justify-content:space-between;margin:0 0 10px;color:#334459;font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}
+    .payment{overflow:hidden;border:2px solid #d4deea;border-radius:16px;background:#fff}
+    .pay-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 16px;min-height:64px}
+    .pay-row+.pay-row{border-top:1px solid var(--line)}
+    .pay-left{display:flex;align-items:center;gap:10px;min-width:0}
+    .pay-logo{display:grid;place-items:center;flex:0 0 64px;height:34px;border-radius:9px;background:#f7f9fc}.pay-logo.bri img{display:block;width:auto;height:16px;max-width:56px;object-fit:contain}
+    .pay-logo.dana svg{display:block;width:auto;height:16px;max-width:56px}.pay-logo.seabank img{display:block;width:auto;height:16px;max-width:56px;object-fit:contain}
+    .account-separator{margin-left:-2px;margin-right:-2px;color:#718096;font-weight:700}.pay-meta{min-width:0}
+    .account-number{color:#1d3046;font-size:14px;font-weight:750;font-variant-numeric:tabular-nums;letter-spacing:.025em;white-space:nowrap}
+    button{font:inherit}
+    .copy-btn{flex:0 0 auto;min-width:54px;padding:9px 12px;border:1px solid #dbe4ee;border-radius:9px;background:#fff;color:#344b63;font-size:11px;font-weight:750;cursor:pointer;transition:background .18s,border-color .18s,transform .18s}
+    .copy-btn:hover{border-color:#aebfd1;background:#f5f8fb}.copy-btn:focus-visible,.wa:focus-visible{outline:3px solid #f3ae24;outline-offset:3px}.copy-btn:active{transform:scale(.96)}
+    .owner{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 16px;border-top:1px solid var(--line);background:#fafbfd;color:#718096;font-size:12px}
+    .owner strong{color:#304258;font-size:13px}
+    .wa{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:54px;margin-top:18px;border-radius:12px;background:#119b5b;box-shadow:0 8px 18px rgba(17,155,91,.18);color:#fff;text-decoration:none;font-size:14px;font-weight:750;transition:transform .18s,background .18s}
+    .wa:hover{transform:translateY(-1px);background:#0d874e}.wa svg{width:20px;height:20px;fill:currentColor}
+    .note{margin:13px 0 0;text-align:center;color:#8b98a8;font-size:11px;line-height:1.6}
+    footer{padding:20px 0 0;text-align:center;color:#98a3b1;font-size:11px;letter-spacing:.025em}
+    .toast{position:fixed;right:18px;bottom:18px;padding:11px 15px;border-radius:11px;background:#1c3046;color:#fff;font-size:12px;font-weight:700;box-shadow:0 8px 24px #17253830;opacity:0;transform:translateY(8px);pointer-events:none;transition:.2s}
+    .toast.show{opacity:1;transform:translateY(0)}
+    @media(max-width:480px){body{padding:22px 14px}.card{padding:27px 21px;border-radius:20px}.pay-row{padding:13px 12px}.account-number{font-size:13px}.copy-btn{padding:8px 9px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <main class="page">
+<section class="card" aria-labelledby="page-title">
+      <h1 id="page-title">Payment Method</h1>
+<div class="payment" aria-label="Daftar metode pembayaran">
+        <div class="pay-row">
+          <div class="pay-left"><span class="pay-logo bri"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iMTkxLjgyMyIgZGF0YS1uYW1lPSJMYXllciAyIj48cGF0aCBkPSJNNDg3Ljg1IDE2LjkwNGEyLjM3NiAyLjM3NiAwIDAgMC0yLjM3NSAyLjM3OXYxNTIuNTY2YzAgMS4zMiAxLjA1NSAyLjM5IDIuMzc2IDIuMzloMjEuNzg3Yy4yOSAwIC41OC0uMDY4Ljc2NS0uMTcyYTIuMzEgMi4zMSAwIDAgMCAxLjU5Ny0yLjIxOFYxOS4yODNhMi4zNyAyLjM3IDAgMCAwLTIuMzYyLTIuMzc5ek0zNTcuMTg4IDE2LjkwNGEyLjM4NiAyLjM4NiAwIDAgMC0yLjM3OCAyLjM3OXYxNTIuNTY2YzAgMS4zMiAxLjA3IDIuMzkgMi4zNzggMi4zOWgyMS4xNzdhMi4zOSAyLjM5IDAgMCAwIDIuMzkxLTIuMzl2LTU1LjQ0MWEyLjM0NSAyLjM0NSAwIDAgMSAyLjM2NC0yLjM2NGgxNy4xMjVjLjc1NCAwIDEuNDc5LjM3IDEuOTE0Ljk5bDQwLjkwNiA1OC4xODdjLjQ2Mi42MjEgMS4xNiAxLjAxOCAxLjk0IDEuMDE4aDI0LjM3NWMxLjkxNSAwIDMuMDM1LTIuMTY1IDEuOTI2LTMuNzVsLTM4LjUtNTQuNzk2Yy0uOTUtMS4zNDctLjI1MS0zLjI0OCAxLjM1OS0zLjY3IDYuMTgtMS42MjQgMTEuNjYtNC4wNCAxNi4yNjctNy4xODIgNC42MjItMy4xNTYgOC41MTYtNi44OCAxMS41OC0xMS4wMzkgMy4wNjMtNC4xMzIgNS4zNjEtOC44MDYgNi44MTMtMTMuODIzYTU2LjcgNTYuNyAwIDAgMCAyLjIzLTE1LjY2YzAtNi45MTktMS4xNzQtMTMuMzQ5LTMuNDMyLTE5LjE3Mi0yLjI3MS01LjczLTUuNjc3LTEwLjczNC0xMC4xNTMtMTQuODU0LTQuNTI5LTQuMTU5LTEwLjI5OS03LjQ3My0xNy4xMjUtOS44MjMtNi45MTktMi4zNjQtMTUuMDI2LTMuNTY2LTI0LjEyNC0zLjU2NnptMjUuOTMyIDIzLjA0aDMzLjMzN2MxLjk1NCAwIDMuODQzLjEyIDUuNzg0LjM1OCA1Ljk4MS45MTEgMTAuOTA3IDMuMDc2IDE0LjY3IDYuNDcgNS4xODkgNC42ODcgNy44MyAxMC41MTIgNy44MyAxNy4zMjUgMCAzLjMxNC0uNTU1IDYuNjE0LTEuNjM4IDkuNzdhMjIuOCAyMi44IDAgMCAxLTUuMjU1IDguNTk1Yy0yLjM3NiAyLjQ1Ni01LjQ1MyA0LjQ2Mi05LjExIDUuOTY3UzQyMC42NyA5MC43IDQxNS42MTMgOTAuN0gzODMuMTJjLTEuMzIgMC0yLjM2NC0xLjA3LTIuMzY0LTIuMzl2LTQ2YTIuMzQ1IDIuMzQ1IDAgMCAxIDIuMzY0LTIuMzY1TTIzMy4zODggMTYuOTA0YTIuMzg0IDIuMzg0IDAgMCAwLTIuMzc1IDIuMzc5djE1Mi41NjZjMCAxLjMyIDEuMDY4IDIuMzkgMi4zNzUgMi4zOWg2MC4wOWM5LjA4NCAwIDE3LjA5OS0xLjI1NCAyMy44NDYtMy42ODQgNi42NjgtMi40MyAxMi4yNjctNS43OTYgMTYuNjI0LTEwLjAwOCA0LjM3LTQuMjEyIDcuNjQ1LTkuMTc2IDkuNzQ1LTE0Ljc3NSAyLjEyNS01LjYyNCAzLjIwNy0xMS43NzggMy4yMDctMTguMjQ4IDAtOC42MzUtMS45OTMtMTYuNDEyLTUuOTI4LTIzLjEyLTMuOTc0LTYuNzYtOC42MzUtMTIuMDI2LTEzLjkwMy0xNS42ODMtMS4yMTUtLjg0NS0xLjM2LTIuNTktLjMxNy0zLjYzMyAxLjAzLTEuMDMgMi4yODQtMi4zOSAzLjY5Ny00LjA0IDEuMzczLTEuNTcgMi42ODEtMy40NiAzLjkxLTUuNjUgMS4yNC0yLjE1MyAyLjI4NC00LjYyMyAzLjE1Ni03LjMwNC44NDUtMi42IDEuMjY0LTUuNDM3IDEuMjY0LTguNDA4IDAtNS45OTUtMS4wMjgtMTEuNjYtMy4wNjItMTYuODUtMi4wMi01LjExLTUuMTYyLTkuNjUyLTkuMzQ4LTEzLjQ2OC00LjIyNS0zLjg1NS05LjU4NS02LjkzLTE1Ljk2Mi05LjEyMy02LjQzLTIuMjA1LTE0LjA3Ni0zLjM0LTIyLjcyNS0zLjM0em0yNS4zNTIgMjMuMDRoMjguMDMxYzUuNDUzIDAgMTAuMS42ODggMTMuODI0IDIuMDYxaC4wMWMyLjQ5Ni45NjQgNC42MSAyLjIzMiA2LjIyIDMuNzkgNC4xNiAzLjk4NyA2LjI3MSA4LjgyMSA2LjI3MSAxNC4zOTMgMCA0LjgyLS44NTggOC45MTEtMi41NzQgMTIuMTcyLTEuNjM3IDMuMTE2LTMuMzQgNS41NTgtNS4wMyA3LjI2MmwtLjcuN2gtNDYuMDU1YTIuMzg2IDIuMzg2IDAgMCAxLTIuMzc2LTIuMzlsLjAwNC0zNS42MjNhMi4zOCAyLjM4IDAgMCAxIDIuMzc2LTIuMzY0em0wIDYzLjY3aDM2LjMzN2M4LjgzMyAwIDE1LjUgMi4zNzcgMTkuODk3IDcuMDkxIDQuMTIgNC42MzQgNi4yMDYgMTAuMTI2IDYuMjA2IDE2LjM0NSAwIDYuNDctMi4zOTEgMTIuMDgzLTcuMDUyIDE2LjY3OC00LjY4NyA0LjU4MS0xMi4yNjQgNi45MTgtMjIuNTUgNi45MThIMjU4Ljc0YTIuMzg2IDIuMzg2IDAgMCAxLTIuMzc3LTIuMzc4VjEwNS45OWMwLTEuMzIgMS4wNy0yLjM3NiAyLjM3Ny0yLjM3Nk0yOC4yMTcgMEMxMi42MjMgMCAwIDEyLjYyMiAwIDI4LjIyOXYxMzUuMzVjMCAxNS42MDggMTIuNjIzIDI4LjI0NCAyOC4yMTcgMjguMjQ0SDE2My41OGMxNS41OTMgMCAyOC4yNDMtMTIuNjM2IDI4LjI0My0yOC4yNDNWMjguMjI5QzE5MS44MjMgMTIuNjIyIDE3OS4xNzMgMCAxNjMuNTggMFptMCAyMi4wMDJoMTguMzUydi4wOTVhMjIuMyAyMi4zIDAgMCAxIDE1LjM5NSA1LjU1OGMuMzQzLjMwNC42ODguNjQ4IDEuMDA1Ljk2NSA4LjYzNSA4LjYyMiA4LjUxNiAyMS42NTItLjIzOCAzMS43NjZMMzMuODI4IDkyLjE0M2MtMS45NCAyLjEyNi0xLjk0IDUuMzg3IDAgNy41bDI4LjcwNSAzMS41My4yNzcuMzI5YzguODMzIDkuNjI1IDguOTEzIDIyLjkzMy4xNTkgMzEuNjYxLS4zMTcuMzQzLS42NjIuNjUtMS4wMDUuOTUzLTQuMjM4IDMuNzc2LTkuNjkxIDUuNzQyLTE1LjM5NSA1LjU4NHYuMDk1SDI4LjIxN2E2LjIxNSA2LjIxNSAwIDAgMS02LjIyMi02LjIyVjI4LjIyYTYuMjEzIDYuMjEzIDAgMCAxIDYuMjIyLTYuMjE3em01Ny4yNzYuMDA2aDIwLjI4MnYuMDk1YTIyLjMyIDIyLjMyIDAgMCAxIDE1LjQwOSA1LjU2Yy4zNDMuMzA0LjY4Ni42NDYgMS4wMDMuOTYzIDguNjM1IDguNjIyIDguNTE2IDIxLjY1NS0uMjM4IDMxLjc2OEw5My4zNzcgOTIuNDY2YTUuNjA1IDUuNjA1IDAgMCAwIC4wNzcgNy41MjZsNjUuMjcgNjkuODA3aC03My4yM2M5LjgzNi0xNi42MjMgNy42MTgtMzgtNi42NjgtNTMuNDA5di0uMDA0TDYwLjE4IDk1LjkwOGwxOC40MzUtMjAuMjguMzk0LS40MTFjMTQuMDYyLTE1Ljg5OCAxNi4xODgtMzYuODIzIDYuNDgzLTUzLjIwOVptNTkuMjA2LjAwNGgxOC44OGE2LjIyIDYuMjIgMCAwIDEgNi4yMjIgNi4yMTd2MTIwLjg0bC01MC4wODMtNTMuNTI2IDE4LjEwMi0xOS45MTEuMzgyLS40MWMxNC4wNjItMTUuODk2IDE2LjIxNS0zNi44MjQgNi40OTctNTMuMjEiIHN0eWxlPSJmaWxsOiMwODU3YzM7ZmlsbC1vcGFjaXR5OjE7ZmlsbC1ydWxlOm5vbnplcm87c3Ryb2tlOm5vbmU7c3Ryb2tlLXdpZHRoOjMuMzgwMTQiLz48L3N2Zz4=" alt="Logo Bank BRI"></span><span class="account-separator" aria-hidden="true">:</span><div class="pay-meta"><div class="account-number">445901023358536</div></div></div>
+          <button class="copy-btn" type="button" data-copy="445901023358536" aria-label="Salin nomor rekening BRI">Salin</button>
+        </div>
+        <div class="pay-row">
+          <div class="pay-left"><span class="pay-logo seabank" role="img" aria-label="Logo SeaBank"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgY2xhc3M9ImxvZ28gcm93LXN0YXJ0IiB3aWR0aD0iMjUyIiBoZWlnaHQ9IjgxIiB2aWV3Qm94PSIwIDAgMjUyIDgxIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMzcuMDQ0IDBDMTYuNjM3IDAgLjA5MyAxNi41NDQuMDkzIDM2LjkxYTM2LjcxIDM2LjcxIDAgMCAwIDcuMDMyIDIxLjY2NyAzNS4zMjcgMzUuMzI3IDAgMCAxIDQuOTE5LTEuOTExYy00LjMwOS01LjQwNi02Ljg3LTEyLjI3Ni02Ljg3LTE5LjcxNSAwLTE3LjUyIDE0LjI2OC0zMS43ODggMzEuNzg4LTMxLjc4OFM2OC43NSAxOS40MyA2OC43NSAzNi45NWMwIDExLjIyLTUuODUzIDIxLjEzOC0xNC43MTUgMjYuNzg4Ljg1NCAwIDEuNzA4IDAgMi42MDItLjA0IDIuODg2LS4xNjMgNS42MS0xLjQ2NCA3LjkyNy0yLjUyIDUuODUzLTYuNTQ2IDkuNDMtMTQuNzU3IDkuNDMtMjQuMjY5QzczLjk5NCAxNi41NDUgNTcuNDUgMCAzNy4wNDQgMHoiIGZpbGw9IiNFQTVGMDAiPjwvcGF0aD48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTYwLjQ1NyA3My42NmMtMi4wNzMuNjkxLTQuMTA1IDEuMDk3LTYuMDU2IDEuMTM4LTguMjUyLjMyNS0xNC4xODctMi4xNTQtMTkuODc4LTQuNTkzLTUuMDgyLTIuMTU1LTkuODM4LTQuMTg3LTE1LjY5MS0zLjg2Mi01LjUyOS40NDctOS4zOSAzLjUzNy05LjU1MyAzLjY1OC0xLjEzOC44OTUtMS4zIDIuNTYxLS40MDYgMy43Ljg5NCAxLjEzOCAyLjYwMSAxLjM0MSAzLjc0LjQ0Ny4wNCAwIDIuODA0LTIuMTk1IDYuNjI1LTIuNDggNC40NzItLjIwMyA4LjU3OCAxLjQ2MyAxMy4yNTIgMy40OTYgNS4zMjUgMi4yNzYgMTEuMjYgNC43OTcgMTkuMTg3IDUuMDQuOTc2LjA0MSAxLjk1MSAwIDIuOTY4LS4wNCAyLjQ4LS4wODEgNS4wNC0uNTcgNy42MDEtMS40MjNhMi43IDIuNyAwIDAgMCAxLjY2Ny0zLjM3NGMtLjUyOS0xLjQ2My0yLjA3My0yLjE5NS0zLjQ1Ni0xLjcwN3oiIGZpbGw9IiMyNjczREQiPjwvcGF0aD48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTY4Ljk1MyA2MS43NDVjLTIuNTIgMS43NDgtNy42MDEgNC43MTUtMTMuNDE0IDQuOTE5LTcuMzk4LjMyNS0xMi4yMzYtMS44My0xNy4zOTgtNC4wMjUtNS40MDctMi4zNTctMTEuMDE2LTQuNzk2LTE5LjQzMS00LjQzLTcuODA1LjI4NC0xNC40MyA0Ljc1Ni0xNy42ODMgNy4zNTdhMi43MjUgMi43MjUgMCAwIDAtLjQwNiAzLjg2MiAyLjcyNSAyLjcyNSAwIDAgMCAzLjg2Mi40MDZjMi43MjMtMi4xOTUgOC4yMS01LjkzNCAxNC40My02LjE3OCA3LjE5NS0uMjg1IDExLjk1MSAxLjc4OCAxNi45OTIgMy45ODMgNC45NiAyLjE1NSAxMC4wNCA0LjM5IDE3LjM1OCA0LjUxMi44MTMgMCAxLjYyNiAwIDIuNDgtLjA0IDcuMTk0LS4yODUgMTMuMjkyLTMuODIxIDE2LjM0LTUuODk1IDEuMjYtLjg1MyAxLjU0NS0yLjU2LjY5MS0zLjgyLS44NTMtMS4yMi0yLjYwMS0xLjU0NS0zLjgyLS42NXoiIGZpbGw9IiMyNjczREQiPjwvcGF0aD48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTM5LjExNiA1OS45MTlsLjA4MS4wNGMzLjIxMiAxLjMwMSA2LjMwMSAyLjU2MSA5LjkxOSAzLjI1MiAxMC4wNC00LjU5MyAxNy4wMzItMTQuNzE1IDE3LjAzMi0yNi40NjMuMDQtMTYuMDE2LTEzLjA0OC0yOS4wNjQtMjkuMDY0LTI5LjA2NC0xNi4wMTcgMC0yOS4xNDcgMTMuMDQ4LTI5LjE0NyAyOS4wNjRhMjguODYyIDI4Ljg2MiAwIDAgMCA3LjE5NiAxOS4xMDZjLjg5NC0uMTYzIDEuNzg4LS4yNDQgMi43MjMtLjMyNSA5LjI2OC0uNTI5IDE1LjY1IDIuMDczIDIxLjI2IDQuMzl6bTIuMDczLTE5LjU5M2E2LjA4NCA2LjA4NCAwIDAgMC0xLjgzLTEuMjZjLS43My0uMzY3LTEuNTQ0LS42NTEtMi4zOTctLjkzNmEyMy42NDQgMjMuNjQ0IDAgMCAxLTIuNDQtLjkzNWMtMS43MDctLjY1LTMuMTMtMS42MjYtNC4zMDgtMy4wMDgtMS4xOC0xLjM0MS0xLjcwOC0zLjA0OC0xLjcwOC01LjEyMS4wNDEtMS4zNDIuMzI2LTIuNTIuODEzLTMuNTM3LjUyOS0xLjAxNiAxLjIyLTEuODcgMi4xMTQtMi41Mi44OTUtLjY1IDEuODctMS4xOCAyLjk2OC0xLjUwNGExMi4zMTQgMTIuMzE0IDAgMCAxIDMuNDk1LS40ODhoLjA4MmMxLjg3LjA0IDMuNTM2LjQwNiA0LjkxOCAxLjA1N2EyNC4xNCAyNC4xNCAwIDAgMSAzLjkwMyAyLjQzOWwtMi44ODYgNC4xNDZjLS44MTMtLjYxLTEuNzA4LTEuMDk4LTIuNjAyLTEuNTA0LS45MzUtLjQwNy0yLjA3My0uNjUtMy40MTQtLjczMi0xLjAxNy0uMDgxLTEuOTUyLjEyMi0yLjcyNC42MS0uODEzLjQ0Ny0xLjIyIDEuMTM4LTEuMjIgMi4wMzIgMCAuNTI5LjEyMiAxLjAxNy40MDcgMS40MjMuMjg1LjQwNy42OTEuNzczIDEuMTc5IDEuMDU3LjQ4OC4zMjUgMS4wMTYuNTI5IDEuNTQ0Ljc3My41MjkuMjAzIDEuMDk4LjQwNiAxLjU4Ni42MSAxLjA1Ny4zNjUgMi4xMTQuODEyIDMuMTcgMS4zNGExMy45MzMgMTMuOTMzIDAgMCAxIDIuODQ2IDEuOTExYy44NTQuNzMyIDEuNTA0IDEuNjI2IDIuMDMyIDIuNjQyLjQ4OCAxLjAxNy43MzIgMi4xOTYuNjkyIDMuNTc4LS4wNDEgMS4zNDEtLjMyNiAyLjU2LS44MTMgMy41NzctLjUyOSAxLjA1Ny0xLjI2IDEuOTEtMi4xNTUgMi42NDItLjkzNS43MzItMS45OTIgMS4yNi0zLjIxMSAxLjYyNi0xLjIyLjM2Ni0yLjU2MS41MjktMy45ODQuNDg4LTEuMzQxLS4wNC0yLjU2LS4yMDMtMy42NTgtLjU3LTEuMDk4LS4zNjUtMi4xMTQtLjc3Mi0zLjAwOS0xLjI2YTE0LjczNyAxNC43MzcgMCAwIDEtMi4yNzYtMS41MDNjLS42NS0uNDQ4LTEuMDk3LS44NTQtMS4zODItMS4xOGwyLjk2OC00LjE4NmExMi4yNTggMTIuMjU4IDAgMCAwIDMuNDU1IDIuMzE3YzEuMzQxLjY1IDIuNzIzLjk3NSA0LjE0Ni45NzUgMS4yMi4wNDEgMi4yMzYtLjI0NCAzLjEzLS43NzIuODk0LS41MjggMS4zLTEuMzQxIDEuMzQyLTIuMzU4IDAtLjc3Mi0uMjQ0LTEuMzgyLS43NzMtMS44N3pNMTAyLjM2NyAzNi42MjNjLS44NTQtLjc3Mi0xLjc4OS0xLjM4Mi0yLjg0Ni0xLjk1MS0xLjA1Ni0uNTI4LTIuMTEzLTEuMDE2LTMuMjEtMS4zODItLjUzLS4yMDMtMS4wNTgtLjQwNy0xLjYyNy0uNjFhNy4xNjcgNy4xNjcgMCAwIDEtMS41ODUtLjc3MmMtLjQ4OC0uMjg1LS44NTQtLjY1LTEuMTgtMS4wNTdhMi40NjQgMi40NjQgMCAwIDEtLjQ0Ni0xLjQyM2MuMDQtLjg5NC40NDctMS41ODUgMS4yMi0yLjAzMi44MTItLjQ0NyAxLjcwNy0uNjUgMi43NjMtLjU3IDEuMzQyLjA4MiAyLjUyLjMyNiAzLjQ1Ni43MzIuOTM1LjQ0OCAxLjgyOS45MzUgMi42NDIgMS41NDVsMi45MjctNC4xNDZjLTEuMjItLjk3Ni0yLjU2MS0xLjc4OS0zLjk0My0yLjQ4LTEuMzgyLS42OTEtMy4wNS0xLjAxNi00LjkxOS0xLjA1N2gtLjA4MWMtMS4yMi0uMDQtMi4zOTkuMTIyLTMuNTM3LjQ4OHMtMi4xMTQuODU0LTMuMDA4IDEuNTA0Yy0uODk0LjY1LTEuNTg1IDEuNTA0LTIuMTE0IDIuNTItLjUyOCAxLjAxNy0uODEzIDIuMjM2LS44NTMgMy41NzgtLjA0MSAyLjA3My41MjggMy43OCAxLjcwNyA1LjEyMWExMC43NTQgMTAuNzU0IDAgMCAwIDQuMzA5IDMuMDA4Yy43NzIuMzI2IDEuNTg1LjY1IDIuNDguODk1Ljg1My4yODQgMS42NjYuNjEgMi4zOTguOTc1LjczMS4zNjYgMS4zNDEuNzczIDEuODMgMS4zMDEuNDg3LjUyOS43NzEgMS4xMzguNzMgMS45MS0uMDQgMS4wMTctLjQ4NyAxLjgzLTEuMzQgMi4zNTgtLjg1NC41MjktMS45MTEuODEzLTMuMTMuNzczYTEwLjg2NSAxMC44NjUgMCAwIDEtNC4xODgtLjk3NmMtMS4zNDEtLjY1LTIuNTItMS40MjMtMy40OTYtMi4zMTdsLTMuMDA4IDQuMTg3Yy4yODUuMjg1Ljc3My43MzIgMS4zODMgMS4yNmExNC43MyAxNC43MyAwIDAgMCAyLjI3NiAxLjUwNGMuODk0LjQ4OCAxLjkxLjg5NSAzLjAwOCAxLjI2IDEuMTM4LjM2NiAyLjM1OC41MjkgMy43LjU3IDEuNDIyLjA0IDIuNzYzLS4xMjIgMy45ODMtLjQ4OCAxLjIyLS4zNjYgMi4zMTctLjg5NSAzLjI1Mi0xLjYyNmE3Ljc5OCA3Ljc5OCAwIDAgMCAyLjE5NS0yLjY4M2MuNTI4LTEuMDU3LjgxMy0yLjI3Ny44NTQtMy42MTguMDQtMS4zODItLjIwNC0yLjYwMi0uNzMyLTMuNjE4LS4zNjYtMS4wNTctMS4wMTYtMS45NTEtMS44Ny0yLjY4M3pNMTc2LjA2NSAzNS41MjljLjI0NC0uMjQ0LjUyOS0uNTcuNzczLS44NTQuMjg0LS4zMjUuNTI4LS42OS43MzEtMS4xNzkuMjQ0LS40ODcuNDA3LTEuMDE2LjU3LTEuNjY2LjEyMi0uNjUuMjAzLTEuNDIzLjIwMy0yLjM1OGE3LjQyIDcuNDIgMCAwIDAtLjQ4OC0yLjY0MiA3LjQ1NyA3LjQ1NyAwIDAgMC0xLjM4Mi0yLjMxN2MtLjYxLS42OTEtMS4zMDEtMS4zMDEtMi4xNTUtMS43ODlhNy4zMTUgNy4zMTUgMCAwIDAtMi44ODYtLjkzNWMtLjY5MS0uMDgxLTEuNDYzLS4xNjItMi4yNzYtLjE2Mi0uODU0LS4wNDEtMS43MDctLjA0MS0yLjY4My0uMDQxbC03Ljg4Ni4wNHYyOS43NTZoMTAuODk0YzEuMDE2IDAgMS43ODkgMCAyLjQzOS0uMDQgMS4wOTgtLjEyMiAyLjExNC0uMzY2IDMuMDktLjc3My45MzQtLjQwNiAxLjgyOS0uOTc1IDIuNTItMS43MDcuNzMyLS43MzIgMS4zMDEtMS42MjYgMS43NDgtMi42MDJhOS4xMzQgOS4xMzQgMCAwIDAgLjY1LTMuNDE0YzAtMS45OTItLjQwNi0zLjU3Ny0xLjE3OS00Ljc1Ni0uNzcyLTEuMjItMS42NjYtMi4wNzMtMi42ODMtMi41NjF6bS0xMi41Mi04LjgyMWgyLjU2MWMuODU0IDAgMS42MjYgMCAyLjI3Ny4wNC42NS4wNDEgMS4yNi4wODIgMS43MDcuMTIyIDEuMDE2LjEyMiAxLjgyOS40NDggMi40MzkuOTc2LjY1LjQ4OC45NzUgMS4yMi45MzUgMi4xMTQuMDQgMS4xMzgtLjMyNSAxLjk5Mi0uOTM1IDIuNDgtLjY1MS40ODctMS40NjQuODEzLTIuNDguOTM0LS40ODguMDgyLTEuMDU3LjEyMi0xLjcwNy4xMjJoLTQuODM3di02Ljc4OGguMDR6bTEwLjI0NCAxOC4xM2MtLjczMi42OS0xLjkxMSAxLjA5Ny0zLjUzNyAxLjE3OS0uNDg3LjA0LTEuMDk3LjA4LTEuOTEuMDRoLTQuODM3di03LjY4M2gyLjQ3OWMuNzczIDAgMS41MDQgMCAyLjE5NS0uMDQuNjkxLS4wNCAxLjMwMS0uMDQgMS43ODkgMCAxLjU4NS4wODEgMi43NjQuNDQ3IDMuNjE4IDEuMDk3Ljg1My42NSAxLjMwMSAxLjU0NSAxLjMwMSAyLjcyNC4wNCAxLjA5Ny0uMzI2IDEuOTkyLTEuMDk4IDIuNjgzek0xMjkuNCAzNS4zNjZjLS41NjktMS41NDQtMS4zODItMi44ODYtMi40MzktMy45NDMtMS4wMTYtMS4wOTctMi4yMzYtMS45MS0zLjYxOC0yLjQ4YTExLjIxNSAxMS4yMTUgMCAwIDAtNC4zNS0uODUzYy0xLjg2OSAwLTMuNTM2LjMyNS00Ljk1OS44OTQtMS40NjMuNjEtMi42ODMgMS40NjMtMy42NTggMi41Mi0uOTc2IDEuMDU3LTEuNzA4IDIuMjc3LTIuMjM2IDMuNjU5LS40ODggMS4zODItLjczMiAyLjg4Ni0uNzMyIDQuNDcxIDAgMS43NDguMzI1IDMuMzM0LjkzNSA0Ljc5N2ExMS43MyAxMS43MyAwIDAgMCAyLjUyIDMuNyAxMS42NiAxMS42NiAwIDAgMCAzLjY1OSAyLjM5OGMxLjM4Mi41MjggMi44NDUuODEzIDQuMzkuODEzIDEuNDIzIDAgMi42ODMtLjEyMiAzLjc0LS4zNjZhMTUuODMyIDE1LjgzMiAwIDAgMCAyLjg0NS0uODEzIDE0LjU3MiAxNC41NzIgMCAwIDAgMi4yMzYtMS4yNmMuNjUxLS40NDcgMS4yNi0uODk1IDEuODctMS4zNDJsLTIuNjQyLTMuNjk5Yy0uMzY2LjI4NS0uNzMyLjU3LTEuMTc5Ljg5NC0uNDg4LjMyNS0xLjA5OC42MS0xLjc0OC44OTUtLjY1LjI0My0xLjM4Mi40NDctMi4yMzYuNjEtLjgxMy4xMjEtMS43NDguMjAzLTIuNzY0LjE2MmExNC4zOTggMTQuMzk4IDAgMCAxLTEuNzA3LS4yNDQgNi4zOCA2LjM4IDAgMCAxLTEuNzA4LS43MzIgOC44NDIgOC44NDIgMCAwIDEtMS40NjMtMS4zYy0uNDQ3LS41MjktLjc3Mi0xLjE4LS45NzYtMS45NTJsLS4wNC0uMjAzaDE2Ljk1MWwuMDQxLTEuM2MuMDgxLTIuMDMzLS4xNjMtMy43ODEtLjczMi01LjMyNnptLTE2LjQyMyAyLjE1NWwuMDQxLS4xNjNjLjA4MS0uNjUuMjg0LS45NzYuNDg4LTEuNDIzbC4xMjItLjI0NGE1LjMxNCA1LjMxNCAwIDAgMSAxLjM0MS0xLjUwNCA0Ljg1NSA0Ljg1NSAwIDAgMSAxLjc4OS0uODUzYy42OTEtLjIwNCAxLjM4Mi0uMzI2IDIuMDczLS4zMjYgMS42MjYuMDQxIDIuOTY3LjQ4OCAzLjk0MyAxLjM4My40ODguNDA2Ljg5NC44MTMgMS4yMTkgMS4yNi4zMjYuNDQ3LjUyOS45NzUuNjEgMS42NjZsLjA0MS4yMDRoLTExLjY2N3pNMTQ5LjQ0IDMwLjM2NmwtLjMyNS0uMjg0Yy0uNjkxLS42MS0xLjU4Ni0xLjA5OC0yLjYwMi0xLjQyMy0uOTc2LS4zNjYtMi4xNTQtLjU3LTMuNDk2LS41Ny0xLjUwNCAwLTIuOTI3LjI4NS00LjIyNy44NTVhOS4zNzkgOS4zNzkgMCAwIDAtMy4zNzQgMi4zNTdjLS45NzYgMS4wMTYtMS43MDggMi4yNzctMi4yNzcgMy43NC0uNTI4IDEuNDIzLS44MTMgMy4wNDktLjgxMyA0LjgzNyAwIDEuNTg2LjI4NSAzLjA5LjgxMyA0LjQ3Mi41NjkgMS4zODIgMS4zMDEgMi41NiAyLjI3NyAzLjYxOGExMi4wNyAxMi4wNyAwIDAgMCAzLjM3NCAyLjQ4YzEuMy41NjggMi42ODIuODUzIDQuMjI3Ljg1MyAxLjM0MiAwIDIuNTItLjE2MyAzLjQ5Ni0uNTI5IDEuMDE2LS4zNjUgMS45MTEtLjg5NCAyLjYwMi0xLjU0NGwuMzI1LS4zMjV2Mi4zNTdoNS4yNDRWMjguNzRoLTUuMjQ0djEuNjI2em0tLjQ4OCAxMi4xOTVjLS4zMjUuNzczLS43NzIgMS40NjQtMS4zMDEgMS45OTItLjUyOC41MjktMS4xMzguODk0LTEuODI5IDEuMTc5YTYuNDg0IDYuNDg0IDAgMCAxLTIuMTU0LjM2NmMtMS42NjcgMC0zLjA0OS0uNTctNC4xODctMS42NjctMS4xMzktMS4xNzktMS42NjctMi43MjMtMS42NjctNC42MzQgMC0xLjg3LjU2OS0zLjQxNSAxLjY2Ny00LjYzNCAxLjEzOC0xLjIyIDIuNTItMS44MyA0LjE4Ny0xLjgzLjc3MiAwIDEuNTA0LjE2MyAyLjE1NC40NDguNzMyLjI4NCAxLjM0MS42OSAxLjgyOSAxLjI2LjUyOS41MjguOTc2IDEuMjIgMS4zMDEgMi4wNzMuMzI1LjgxMy40ODggMS43MDcuNDg4IDIuNzY0IDAgLjk3Ni0uMTYzIDEuODctLjQ4OCAyLjY4M3pNMTk4LjU4NiAzMC4zNjZsLS4zMjUtLjI4NGMtLjY5MS0uNjEtMS41ODUtMS4wOTgtMi42MDItMS40MjMtLjk3NS0uMzY2LTIuMTU0LS41Ny0zLjQ5NS0uNTctMS41MDQgMC0yLjkyNy4yODUtNC4yMjguODU1YTkuMzc5IDkuMzc5IDAgMCAwLTMuMzc0IDIuMzU3Yy0uOTc2IDEuMDE2LTEuNzA3IDIuMjc3LTIuMjc2IDMuNzQtLjUyOSAxLjQyMy0uODEzIDMuMDQ5LS44MTMgNC44MzcgMCAxLjU4Ni4yODQgMy4wOS44MTMgNC40NzIuNTY5IDEuMzgyIDEuMyAyLjU2IDIuMjc2IDMuNjE4YTEyLjA4NSAxMi4wODUgMCAwIDAgMy4zNzQgMi40OGMxLjMwMS41NjggMi42ODMuODUzIDQuMjI4Ljg1MyAxLjM0MSAwIDIuNTItLjE2MyAzLjQ5NS0uNTI5IDEuMDE3LS4zNjUgMS45MTEtLjg5NCAyLjYwMi0xLjU0NGwuMzI1LS4zMjV2Mi4zNTdoNS4yNDRWMjguODYyaC01LjI0NHYxLjUwNHptLS40ODggMTIuMTk1Yy0uMzI1Ljc3My0uNzcyIDEuNDY0LTEuMyAxLjk5Mi0uNTI5LjUyOS0xLjEzOS44OTQtMS44MyAxLjE3OWE2LjQ4IDYuNDggMCAwIDEtMi4xNTQuMzY2Yy0xLjY2NyAwLTMuMDQ5LS41Ny00LjE4Ny0xLjY2Ny0xLjEzOC0xLjE3OS0xLjY2Ny0yLjcyMy0xLjY2Ny00LjYzNCAwLTEuODcuNTY5LTMuNDE1IDEuNjY3LTQuNjM0IDEuMTM4LTEuMjIgMi41Mi0xLjgzIDQuMTg3LTEuODMuNzcyIDAgMS40NjMuMTYzIDIuMTU0LjQ0OC43MzIuMjg0IDEuMzQyLjY5IDEuODMgMS4yNi41MjguNTI4Ljk3NSAxLjIyIDEuMyAyLjA3My4zMjYuODEzLjQ4OCAxLjcwNy40ODggMi43NjQgMCAuOTc2LS4xNjIgMS44Ny0uNDg4IDIuNjgzek0yNDIuMTIyIDM4LjU3OWw5LjU1My0xMC40NDdoLTYuOTExbC03Ljg4NiA4LjU3N1YyMS4yNjJoLTUuMjg0djMwLjA4aDUuMjg0di02LjgyOGwxLjc0OC0xLjk1MiA2LjgyOSA4Ljc4SDI1MmwtOS44NzgtMTIuNzYzek0yMjYuODc4IDMzLjMzNGMtLjQ4OC0xLjM4Mi0xLjQyMi0yLjYwMS0yLjc2NC0zLjYxNy0xLjM0MS0xLjAxNy0zLjA0OS0xLjU0NS01LjA4MS0xLjU0NS0xLjA1NyAwLTIuMTU1LjE2Mi0zLjI1Mi40ODhhNy44NTIgNy44NTIgMCAwIDAtMi42NDIgMS4zODJ2LTEuMThoLTUuMzI2djIyLjQ4aDUuMzI2VjM5LjMxYy4wNC0uODEzLjEyMi0xLjU4NS4yMDMtMi4zMTcuMTIyLS43NzIuMzI1LTEuNDIzLjY1LTEuOTkycy44MTMtMS4wMTYgMS40MjMtMS4zODJjLjYxLS4zNjYgMS4zODItLjU3IDIuMzE3LS42MSAxLjE3OS0uMDQgMi4xMTQuMjg1IDIuODQ2Ljg5NS43MzEuNjUgMS4yMTkgMS40NjMgMS40NjMgMi41Mi4xMjIuNDg4LjIwMyAxLjEzOC4yODUgMS45NTEuMDQuNzcyLjA4MSAxLjkxLjA4MSAzLjQxNXY5LjU1Mmg1LjI0NFY0MC40OWE1MS41NiA1MS41NiAwIDAgMC0uMTIyLTMuODIxIDEzLjQ3MyAxMy40NzMgMCAwIDAtLjY1MS0zLjMzNHoiIGZpbGw9IiNFQTVGMDAiPjwvcGF0aD48L3N2Zz4=" alt="Logo SeaBank"></span><span class="account-separator" aria-hidden="true">:</span><div class="pay-meta"><div class="account-number">901391152941</div></div></div>
+          <button class="copy-btn" type="button" data-copy="901391152941" aria-label="Salin nomor rekening SeaBank">Salin</button>
+        </div>        <div class="pay-row">
+          <div class="pay-left"><span class="pay-logo dana" role="img" aria-label="Logo DANA"><svg class="dana-logo" viewBox="0 0 382 109.22" role="img" aria-label="Logo DANA"><path fill="#008ceb" fill-rule="evenodd" d="M151 82.84c7.26.52 15.72-5.12 18.7-8.34 10.36-11.21 10.61-27.42.18-39.16-3.88-4.37-13-9.2-18.77-8.52h-20.89v55.95l20.78.07ZM142 70.72V38.87a75 75 0 0 1 9.82 0 15.22 15.22 0 0 1 7.13 2.76c12 8.2 7 27.75-7.33 29.06a71.77 71.77 0 0 1-9.62.03Z"/><path fill="#008ceb" fill-rule="evenodd" d="M334.39 82.94h11.91V70.88h23.63l.07 12h11.91V63c0-6 .5-13.48-1-18.91a23.62 23.62 0 0 0-45.49-.25c-1.6 5.36-1.06 13.05-1.06 19 0 6.72-.07 13.48 0 20.2Zm11.92-24.19c-.07-5-.6-10.35 1.75-14.2a11.61 11.61 0 0 1 10.15-5.77 11.79 11.79 0 0 1 10.08 5.82c2.32 4 1.77 9 1.71 14.16Z"/><path fill="#008ceb" fill-rule="evenodd" d="M198.19 82.93h11.87c0-2.52-.32-10.23.11-12.06h23.54l.08 12.05h11.89c-.06-6.68 0-13.35 0-20 0-5.7.53-13.86-1-18.92a23.63 23.63 0 0 0-45.49-.23c-1.59 5.2-1.05 13.15-1.05 18.94 0 6.68-.15 13.53 0 20.19Zm11.88-24.18c-.08-5-.59-10.42 1.76-14.19a11.71 11.71 0 0 1 20.23 0c2.33 4 1.77 9.08 1.73 14.17Z"/><path fill="#008ceb" d="m266.57 48.67-.17 8.33c0 7-.34 20.07 0 25.76h11.64c.27-4-.42-32.41.31-33.32 0-5.52 5.77-10.66 11.59-10.68A11.62 11.62 0 0 1 298.06 42c1.48 1.35 3.75 4.43 3.71 7.54.54.31.11 30 .28 33.29h11.65l-.09-33.95c.29-2.66-1.31-6.77-2.34-8.85A23.56 23.56 0 0 0 269 39.67c-1 2.05-2.68 6.27-2.43 9Z"/><circle fill="#008ceb" cx="54.61" cy="54.61" r="54.61"/><path fill="#fefefe" d="M86.43 54.84v15.37c0 1-.43 1.21-1.27.72a28.08 28.08 0 0 0-3.5-1.78 23.73 23.73 0 0 0-11.49-1.53 55.06 55.06 0 0 0-12.44 3.12c-4 1.35-7.92 2.81-12 3.94a33.41 33.41 0 0 1-10.42 1.37 22.12 22.12 0 0 1-11-3.43A2.71 2.71 0 0 1 23 70.2Q23 55.1 23 40c0-.49 0-1.07.44-1.32s.89.16 1.27.41a21 21 0 0 0 12.15 3.6A32.4 32.4 0 0 0 45.94 41c4.16-1.29 8.18-3 12.27-4.45a74.14 74.14 0 0 1 9.77-3 21.21 21.21 0 0 1 16.73 3.09 3.67 3.67 0 0 1 1.75 3.27c0 5 0 10 0 15Z"/></svg></span><span class="account-separator" aria-hidden="true">:</span><div class="pay-meta"><div class="account-number">087887844455</div></div></div>
+          <button class="copy-btn" type="button" data-copy="087887844455" aria-label="Salin nomor DANA">Salin</button>
+        </div>
+        <div class="owner"><span>Nama pemilik rekening</span><strong>Usep Sopwan A.</strong></div>
+      </div>
+      <a class="wa" href="https://wa.me/6287887844455?text=Halo%2C%20berikut%20saya%20lampirkan%20bukti%20pembayarannya%2C%20Terima%20kasih." target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2a9.94 9.94 0 0 0-8.48 15.13L2 22l5.02-1.52A10 10 0 1 0 12.04 2Zm0 18.18a8.17 8.17 0 0 1-4.17-1.14l-.3-.18-2.98.9.92-2.9-.2-.3a8.18 8.18 0 1 1 6.73 3.62Zm4.49-6.13c-.25-.13-1.48-.73-1.71-.81-.23-.08-.4-.13-.57.13-.17.25-.65.81-.8.98-.15.17-.3.19-.55.06-.25-.13-1.06-.39-2.02-1.24-.75-.67-1.25-1.49-1.4-1.74-.15-.25-.02-.39.11-.52.11-.11.25-.3.38-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.45-.06-.13-.57-1.37-.78-1.88-.2-.49-.41-.42-.57-.43h-.48c-.17 0-.45.06-.68.32-.23.25-.89.87-.89 2.11 0 1.24.91 2.44 1.04 2.61.13.17 1.79 2.73 4.33 3.83.6.26 1.07.41 1.43.52.6.19 1.15.16 1.58.1.48-.07 1.48-.61 1.69-1.2.21-.59.21-1.1.15-1.2-.06-.11-.23-.17-.48-.3Z"/></svg>
+        Konfirmasi pembayaran via WhatsApp
+      </a>
+</section>
+    <footer>&copy; 2026 Usep Sopwan A.</footer>
+  </main>
+  <div class="toast" role="status" aria-live="polite"></div>
+  <script>
+    const toast = document.querySelector('.toast');
+    let toastTimer;
+    async function copyText(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        try {
+          await navigator.clipboard.writeText(text);
+          return;
+        } catch {
+          // Try the browser-compatible fallback below.
+        }
+      }
+      const field = document.createElement('textarea');
+      field.value = text;
+      field.setAttribute('readonly', '');
+      field.style.cssText = 'position:fixed;left:0;top:0;width:1px;height:1px;padding:0;border:0;opacity:0;font-size:16px';
+      document.body.appendChild(field);
+      field.focus({ preventScroll: true });
+      field.select();
+      field.setSelectionRange(0, field.value.length);
+      let copied = false;
+      try { copied = document.execCommand('copy'); } finally { field.remove(); }
+      if (!copied) throw new Error('Salin gagal');
+    }
+    document.querySelectorAll('.copy-btn').forEach((button) => {
+      button.addEventListener('click', async () => {
+        try {
+          await copyText(button.dataset.copy);
+          toast.textContent = 'Nomor berhasil disalin';
+          button.textContent = 'Tersalin';
+        } catch {
+          toast.textContent = 'Gagal menyalin. Silakan salin nomor secara manual.';
+        }
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toast.classList.remove('show');
+          document.querySelectorAll('.copy-btn').forEach((item) => { item.textContent = 'Salin'; });
+        }, 1800);
+      });
+    });
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
